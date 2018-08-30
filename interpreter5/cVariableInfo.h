@@ -38,30 +38,6 @@ private:
     //int iVariableNum;
 };
 ////////////////////////////////////////////////////////////////////
-#if 0
-template <class T>
-struct tagPoint
-{
-    T cElement;
-    tagPoint * pLeft;
-    tagPoint * pRight;
-    tagPoint * pParent;
-};
-template <class T>
-class InterpreterTree
-{
-public:
-    InterpreterTree();
-    int AddPoint(T ch);
-    int AddNumber(int number);
-    virtual ~InterpreterTree();
-    int ReleaseResource();
-private:
-    tagPoint<T> * pTreeHead;
-    int Order_back(T * p);
-};
-#endif
-////////////////////////////////////////////////////////////////////
 typedef enum
 {
     DATA_NONE,//нч

@@ -4,7 +4,6 @@ template <class T>
 CStack<T>::CStack()
 {
     pElementList = NULL;
-    //iVariableNum = 0;
 }
 
 template <class T>
@@ -32,8 +31,6 @@ int CStack<T>::ElementPush(T ch)//元素入栈
     tagElement<T> * p = NULL;
 
     p = new tagElement<T>;
-
-    //sprintf(p->cVariableName,"t%d",++iVariableNum);
 
     p->cOperator = ch;
     p->pNext     = NULL;
@@ -64,26 +61,6 @@ int CStack<T>::ElementPull(T * pch)//元素出栈
     delete p;
     return 1;
 }
-
-/*template <class T>
-int CStack<T>::ElementPull(T * pch,char * pVariableNumber,int iBufflen)//元素出栈
-{
-    tagElement<T> * p = NULL;
-    if (pElementList == NULL)
-    {
-        return 0;
-    }
-    p = pElementList;
-    if (pch != NULL)
-    {
-        * pch = p->cOperator;
-        memset(pVariableNumber,0x00,iBufflen);
-        strncpy(pVariableNumber,p->cVariableName,iBufflen - 1);
-    }
-    pElementList = pElementList->pNext;
-    delete p;
-    return 1;
-}*/
 
 template <class T>
 int CStack<T>::ElementGetTop(T * pch)//获得栈顶元素,但是不会导致元素出栈
@@ -128,99 +105,6 @@ int CStack<T>::GetVariableNumber(void)
 {
     return 0;//iVariableNum;
 }
-//////////////////////////////////////////////////////////////////
-#if 0
-template <class T>
-InterpreterTree<T>::InterpreterTree()
-{
-    pTreeHead = NULL;
-}
-
-template <class T>
-InterpreterTree<T>::~InterpreterTree()
-{
-
-}
-
-template <class T>
-int InterpreterTree<T>::Order_back(T * p)
-{
-    if (p == NULL)
-        return 0;
-
-    Order_back(p->pLeft);
-    Order_back(p->pRight);
-    return 1;
-}
-
-template <class T>
-int InterpreterTree<T>::ReleaseResource()
-{
-    tagPoint * pCur = pTreeHead,* p;
-    while (pCur)
-    {
-        if (pCur->pLeft != NULL)
-        {
-            pCur = pCur->pLeft;
-            continue;
-        }
-        if (pCur->pRight != NULL)
-        {
-            pCur = pCur->pRight;
-            continue;
-        }
-        p = pCur;
-        pCur = pCur->pParent;
-        free(p);
-    }
-    return 1;
-}
-
-template <class T>
-int InterpreterTree<T>::AddPoint(T ch)
-{
-    char cOperator[] = "+-*/";
-    tagPoint * p = NULL,* pCur = pTreeHead;
-
-    p = new tagPoint<T>;
-    p->cElement = ch;
-    p->pLeft    = NULL;
-    p->pRight   = NULL;
-    p->pParent  = NULL;
-
-    if (pTreeHead == NULL)
-    {
-        pTreeHead = p;
-        return 0;
-    }
-    if (InCharArray(ch,cOperator,sizeof(cOperator)) == -1)
-    {
-        //number
-    }
-    else//operator
-    {
-    }
-    return 0;
-}
-template <class T>
-int InterpreterTree<T>::AddNumber(int number)
-{
-    /*tagPoint * p = NULL;
-
-    p = new tagPoint<T>;
-    p->cElement = number;
-    p->pLeft    = NULL;
-    p->pRight   = NULL;
-    p->pParent  = NULL;
-
-    if (pTreeHead == NULL)
-    {
-        pTreeHead = p;
-        return 0;
-    }*/
-    return 0;
-}
-#endif
 //////////////////////////////////////////////////////////////////
 cVariableInfo::cVariableInfo(void)
 {
@@ -462,14 +346,14 @@ OTPERATOR_TYPE cVariableInfo::Precede(char operator1,char operator2)//运算符优先
     case '(':
         if (operator2 == ')')
             return OTPERATOR_EQUAL;
-
-        return OTPERATOR_LOW;
+		else
+			return OTPERATOR_LOW;
 
     case ')':
         if (operator2 == '(')
             return OTPERATOR_ERROR;
-
-        return OTPERATOR_HIGH;
+		else
+			return OTPERATOR_HIGH;
 
     case '+':
     case '-':
