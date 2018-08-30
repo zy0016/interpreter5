@@ -212,17 +212,6 @@ int cVariableInfo::Expression(int value1,int value2,char coperator,int * result)
     return 0;
 }
 /////////////////////////////////////////////////////////
-int cVariableInfo::GetOutputDataNodeAmount(void)//»ñµÃÊý¾ÝÁ´±í½ÚµãÊýÄ¿
-{
-    int i = 0;
-    DataNode * p = pOutputDataList;
-    while (p != NULL)
-    {
-        p = p->pNext;
-        i++;
-    }
-    return i;
-}
 int cVariableInfo::AddOutputNode(const char * pData,int ivalue)//½«Êý¾ÝÌí¼Óµ½Êä³öÁ´±íÖÐÈ¥
 {
     int iCount = 0;
@@ -233,7 +222,7 @@ int cVariableInfo::AddOutputNode(const char * pData,int ivalue)//½«Êý¾ÝÌí¼Óµ½Êä³
     strncpy(p->cData,pData,sizeof(p->cData) - 1);
     p->iDataValue = ivalue;
 
-    if (GetOutputDataNodeAmount() == 0)//¼ÓÈëÍ·½Úµã
+    if (pOutputDataList == NULL)//¼ÓÈëÍ·½Úµã
     {
         pOutputDataList = p;
         p->pNext  = NULL;

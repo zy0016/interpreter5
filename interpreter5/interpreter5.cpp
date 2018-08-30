@@ -4,10 +4,6 @@
 #include "GetInput.h"
 #include "cVariableInfo.h"
 
-//char *commanstring(char shortstring[], char longstring[]);
-//int StrCmp(const char *str1, const char *str2);
-//char *strcpy_new(char *strDest, const char *strSrc);
-
 int main(int argc, char * argv[])
 {
 #if 0
@@ -60,8 +56,8 @@ int main(int argc, char * argv[])
 #else
     cVariableInfo VarInfo;
     CGetInput cgi(&VarInfo);
-    char * pint = "yufa.txt";
-    char * pout = "out.txt";
+    const char * pint = "yufa.txt";
+    const char * pout = "out.txt";
 
     if (cgi.ReadStandardInput(pint) == 0)//argv[1]
     {
@@ -76,41 +72,6 @@ int main(int argc, char * argv[])
 #endif
     return 0;
 }
-
-//int StrCmp(const char *str1, const char *str2)
-//{
-//    //省略判断空指针(自己保证)
-//    while(*str1 && *str1++ == *str2++);
-//    return *str1-*str2;
-//}
-//char *strcpy_new(char *strDest, const char *strSrc)
-//{
-//    char *address = strDest;
-//    while ((*strDest++ = *strSrc++) != '\0')
-//        NULL;
-//    return address;
-//}
-//char *commanstring(char shortstring[], char longstring[])
-//{
-//    int i, j;
-//
-//    char *substring=(char*)malloc(256);
-//
-//    if(strstr(longstring, shortstring)!=NULL) //如果……，那么返回shortstring
-//        return shortstring;
-//
-//    for(i=strlen(shortstring)-1;i>0; i--) //否则，开始循环计算
-//    {
-//        for(j=0; j<=strlen(shortstring)-i; j++)
-//        {
-//            memcpy(substring, &shortstring[j], i);
-//            substring[i]='\0';
-//            if(strstr(longstring, substring)!=NULL)
-//                return substring;
-//        }
-//    }
-//    return NULL;
-//}
 
 int FileIsExist(const char * filename)//考察文件是否可读
 {

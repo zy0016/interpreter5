@@ -12,20 +12,16 @@
 template <class T>
 struct tagElement
 {
-    char cVariableName[5];
     T cOperator;
     tagElement * pNext;
-}/*tag_Operator*/;
-//typedef struct tagElement OperatorNode;
+};
 
 template <class T>
-
 class CStack  
 {
 public:
     int ElementPush(T ch);//元素入栈
     int ElementPull(T * pch);//元素出栈
-    //int ElementPull(T * pch,char * pVariableNumber,int iBufflen);//元素出栈
     int ElementGetTop(T * pch);//获得栈顶元素,但是不会导致元素出栈
     int ReleaseElementList(void);//释放资源
     int GetOperatorArithmetic(void);//获得元素链表某个元素的数目
@@ -35,7 +31,6 @@ public:
 	virtual ~CStack();
 private:
     tagElement<T> * pElementList;//元素链表指针
-    //int iVariableNum;
 };
 ////////////////////////////////////////////////////////////////////
 typedef enum
@@ -98,7 +93,6 @@ private:
     int CountCurrentValue(int icurvalue,int * presult);
     int RemoveNewLine(const char * pLineData,char * pOutLine,int iBufferlen);
     //////////////////////////////////////////////////////////////////////////
-    int GetOutputDataNodeAmount(void);//获得数据链表节点数目
     int AddOutputNode(const char * pData,int ivalue);
     int ValidEqualmarkPlace(const char * pLine);
     ///////////////////////////////////
