@@ -6,12 +6,12 @@
 
 int main(int argc, char * argv[])
 {
+	cVariableInfo VarInfo; 
+	CGetInput cgi(&VarInfo);
 #if 0
     if (argc == 1)//±Í◊º ‰»Î
     {
         printf("Standard input:\r\n");
-        cVariableInfo VarInfo; //
-        CGetInput cgi(&VarInfo);
         char ch;
         
         if (cgi.ReadStandardInput() == 0)
@@ -36,8 +36,6 @@ int main(int argc, char * argv[])
             printf("Can not open %s.\r\n",argv[1]);
             return 0;
         }
-        cVariableInfo VarInfo;
-        CGetInput cgi(&VarInfo);
         
         if (cgi.ReadStandardInput(argv[1]) == 0)//argv[1]
         {
@@ -54,8 +52,6 @@ int main(int argc, char * argv[])
         printf("Wrong parameters number!\r\n");
     }
 #else
-    cVariableInfo VarInfo;
-    CGetInput cgi(&VarInfo);
     const char * pint = "yufa.txt";
     const char * pout = "out.txt";
 

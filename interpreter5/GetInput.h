@@ -8,13 +8,6 @@
 
 #pragma once
 
-typedef struct tagStack
-{
-    char cData1[VARIABLE_MAXLEN + 1];
-    struct tagStack * pNext;
-}tag_Stack;
-typedef struct tagStack StackNode;
-
 class CGetInput//读取数据类
 {
 public:
@@ -26,7 +19,6 @@ public:
     ~CGetInput(void);
 private:
     cVariableInfo * VarInfo;
-    StackNode * pList;//链表头
 };
 
 #endif

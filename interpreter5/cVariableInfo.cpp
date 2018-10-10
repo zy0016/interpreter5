@@ -328,42 +328,42 @@ int cVariableInfo::AddNode(const char * pLineData)//¶ÁÈ¡Ã¿Ò»ĞĞÊı¾İ,½«½âÎöºÃµÄÊı¾
     return iCount;
 }
 //////////////////////////////////////////////////////////
-OTPERATOR_TYPE cVariableInfo::Precede(char operator1,char operator2)//ÔËËã·ûÓÅÏÈ¼¶±È½Ï
+OTPERATOR_TYPE cVariableInfo::Precede(char operator_old,char operator_new)//ÔËËã·ûÓÅÏÈ¼¶±È½Ï
 {
-    switch (operator1)
+    switch (operator_old)
     {
     case '(':
-        if (operator2 == ')')
+        if (operator_new == ')')
             return OTPERATOR_EQUAL;
 		else
 			return OTPERATOR_LOW;
 
     case ')':
-        if (operator2 == '(')
+        if (operator_new == '(')
             return OTPERATOR_ERROR;
 		else
 			return OTPERATOR_HIGH;
 
     case '+':
     case '-':
-        if (operator2 == '+' || operator2 == '-')
+        if (operator_new == '+' || operator_new == '-')
             return OTPERATOR_HIGH;
-        if (operator2 == '*' || operator2 == '/')
+        if (operator_new == '*' || operator_new == '/')
             return OTPERATOR_LOW;
-        if (operator2 == '(')
+        if (operator_new == '(')
             return OTPERATOR_LOW;
-        if (operator2 == ')')
+        if (operator_new == ')')
             return OTPERATOR_HIGH;
 
         break;
 
     case '*':
     case '/':
-        if (operator2 == '+' || operator2 == '-' || operator2 == '*' || operator2 == '/')
+        if (operator_new == '+' || operator_new == '-' || operator_new == '*' || operator_new == '/')
             return OTPERATOR_HIGH;
-        if (operator2 == '(')
+        if (operator_new == '(')
             return OTPERATOR_LOW;
-        if (operator2 == ')')
+        if (operator_new == ')')
             return OTPERATOR_HIGH;
 
         break;
@@ -400,7 +400,7 @@ int cVariableInfo::GetBracketNumber(const char * pString,DATA_TYPE eDatatype)//»
 }
 //½âÎöÒ»ĞĞ×Ö·û´®,pVariable:·µ»Ø±äÁ¿Ãû³Æ,¿ÉÄÜ·µ»Ø¿Õ´®,ibufflen:pVariable´óĞ¡,
 //iValue:·µ»Ø¸Ä±äÁ¿¶ÔÓ¦µÄÊıÖµ
-int cVariableInfo::ExpressionLine(const char * pLineData,char * pVariable,int ibufflen,int * iValue)
+int cVariableInfo::ExpressionLine(const char * pLineData,char * pVariable,int ibufflen,int * pValue)
 {
     char cData[VARIABLE_MAXLEN + 1] = "",cVariable[VARIABLE_MAXLEN + 1] = "";
     char ErrorString[VARIABLE_MAXLEN + 1] = "";//³ö´íÌáÊ¾
@@ -442,8 +442,8 @@ int cVariableInfo::ExpressionLine(const char * pLineData,char * pVariable,int ib
         {
             if (JudgeNewLine(pLineData) == -1)
                 return -1;
-            if (pStackNumberList->ElementPull(&ivalue) == 1)//if (NumberPull(&ivalue) == 1)
-                * iValue = ivalue;
+            if (pStackNumberList->ElementPull(&ivalue) == 1)
+                * pValue = ivalue;
             break;
         }
         if (eDatatype == DATA_OUTPUTINDICATE)//#
@@ -480,7 +480,7 @@ int cVariableInfo::ExpressionLine(const char * pLineData,char * pVariable,int ib
                 printf("The string is incorrect in the \"%s\"!\r\n",ErrorString);
                 return -1;
             }
-            pStackNumberList->ElementPush(ivalue);//NumberPush(ivalue);
+            pStackNumberList->ElementPush(ivalue);
 
             printf("t%d = %d\r\n",iVariableNum++,ivalue);
 
@@ -507,18 +507,17 @@ int cVariableInfo::JudgeOperator(char copeator_new,const char * pLineData)
     
     if (copeator_new == '+' || copeator_new == '-')
     {
-        if (pStackNumberList->GetElementAmount() == 0)//if (GetNumberAmount() == 0)//ÊıÖµÕ»ÖĞÃ»ÓĞÊıÖµ,ÕâÊÇ¸öÀàËÆÓÚ +5»òÕß-9µÄÇé¿ö
+        if (pStackNumberList->GetElementAmount() == 0)//ÊıÖµÕ»ÖĞÃ»ÓĞÊıÖµ,ÕâÊÇ¸öÀàËÆÓÚ +5»òÕß-9µÄÇé¿ö
         {
-            pStackNumberList->ElementPush(0);//NumberPush(0);//ÊıÖµÕ»Èë"0"×÷ÎªµÚÒ»¸öÊı¾İ
+            pStackNumberList->ElementPush(0);//ÊıÖµÕ»Èë"0"×÷ÎªµÚÒ»¸öÊı¾İ
 
             printf("t%d = %d\r\n",iVariableNum++,0);
         }
         else
         {
-            //if (GetOperatorArithmetic() + 1 > GetNumberAmount())//ÔËËã·ûÕ»´óÓÚÊıÖµÕ»,ÀàËÆÓÚ-(+3 * 6)µÄÇé¿ö
-            if (pStackOperatorList->GetOperatorArithmetic() + 1 > pStackNumberList->GetElementAmount())
+            if (pStackOperatorList->GetOperatorArithmetic() + 1 > pStackNumberList->GetElementAmount())//ÔËËã·ûÕ»´óÓÚÊıÖµÕ»,ÀàËÆÓÚ-(+3 * 6)µÄÇé¿ö
             {
-                pStackNumberList->ElementPush(0);//NumberPush(0);
+                pStackNumberList->ElementPush(0);
 
                 printf("t%d = %d\r\n",iVariableNum++,0);
             }
@@ -526,16 +525,16 @@ int cVariableInfo::JudgeOperator(char copeator_new,const char * pLineData)
     }
     else if (copeator_new == '*' || copeator_new == '/')
     {
-        if (pStackNumberList->GetElementAmount() == 0)//if (GetNumberAmount() == 0)//ÊıÖµÕ»ÖĞÃ»ÓĞÊıÖµ,ÕâÊÇ¸öÀàËÆÓÚ "*5"»òÕß"/9"µÄÇé¿ö,ÈÏÎª±í´ïÊ½·Ç·¨
+        if (pStackNumberList->GetElementAmount() == 0)//ÊıÖµÕ»ÖĞÃ»ÓĞÊıÖµ,ÕâÊÇ¸öÀàËÆÓÚ "*5"»òÕß"/9"µÄÇé¿ö,ÈÏÎª±í´ïÊ½·Ç·¨
         {
             RemoveNewLine(pLineData,ErrorString,sizeof(ErrorString));
             printf("The %c is incorrect in this \"%s\"!\r\n",copeator_new,ErrorString);
             return -1;
         }
     }
-    if (pStackOperatorList->ElementGetTop(&copeator_old) == 0)//if (OperatorGetCh(&copeator_old) == 0)//Õ»Îª¿Õ
+    if (pStackOperatorList->ElementGetTop(&copeator_old) == 0)//Õ»Îª¿Õ
     {
-        pStackOperatorList->ElementPush(copeator_new);//OperatorPush(copeator_new);
+        pStackOperatorList->ElementPush(copeator_new);
     }
     else//·ûºÅÕ»²»Îª¿Õ
     {
@@ -543,8 +542,8 @@ int cVariableInfo::JudgeOperator(char copeator_new,const char * pLineData)
         switch (oType)
         {
         case OTPERATOR_HIGH:
-            inumberpullresult1 = pStackNumberList->ElementPull(&ivalue1);//NumberPull(&ivalue1);
-            inumberpullresult2 = pStackNumberList->ElementPull(&ivalue2);//NumberPull(&ivalue2);
+            inumberpullresult1 = pStackNumberList->ElementPull(&ivalue1);
+            inumberpullresult2 = pStackNumberList->ElementPull(&ivalue2);
             if (inumberpullresult1 == 0 && inumberpullresult2 == 0)
             {
                 ivalue1 = ivalue2 = 0;
@@ -562,12 +561,12 @@ int cVariableInfo::JudgeOperator(char copeator_new,const char * pLineData)
                 return -1;
             }
 
-            pStackOperatorList->ElementPull(NULL);//OperatorPull(NULL);//ÔËËã·û³öÕ»
-            if (pStackOperatorList->ElementGetTop(&coperator_temp) == 1)//if (OperatorGetCh(&coperator_temp) == 1)//È¡µÃÕ»¶¥ÔËËã·û
+            pStackOperatorList->ElementPull(NULL);//ÔËËã·û³öÕ»
+            if (pStackOperatorList->ElementGetTop(&coperator_temp) == 1)//È¡µÃÕ»¶¥ÔËËã·û
             {
                 if (coperator_temp == '(' && copeator_new == ')')//Èç¹ûÔËËã·ûÊÇ"(",ÔÙ´Î³öÕ»ÍË³öÕâ¸ö"(",ÒòÎªËüÒÑ¾­Ã»ÓĞÓÃÁË
                 {
-                    pStackOperatorList->ElementPull(NULL);//OperatorPull(NULL);
+                    pStackOperatorList->ElementPull(NULL);
                     if (CountCurrentValue(ivalue,&ivalue) == -1)
                     {
                         RemoveNewLine(pLineData,ErrorString,sizeof(ErrorString));
@@ -576,19 +575,19 @@ int cVariableInfo::JudgeOperator(char copeator_new,const char * pLineData)
                     }
                 }
             }
-            pStackNumberList->ElementPush(ivalue);//NumberPush(ivalue);
+            pStackNumberList->ElementPush(ivalue);
 
             printf("t%d = %d\r\n",iVariableNum++,ivalue);
 
             if (copeator_new == '+' || copeator_new == '-' || copeator_new == '*' || copeator_new == '/')
-                pStackOperatorList->ElementPush(copeator_new);//OperatorPush(copeator_new);//ĞÂµÄÔËËã·ûÖØĞÂÈëÕ»
+                pStackOperatorList->ElementPush(copeator_new);//ĞÂµÄÔËËã·ûÖØĞÂÈëÕ»
             break;
         case OTPERATOR_LOW:
-            pStackOperatorList->ElementPush(copeator_new);//OperatorPush(copeator_new);//ÔËËã·ûÈëÕ»
+            pStackOperatorList->ElementPush(copeator_new);//ÔËËã·ûÈëÕ»
             break;
         case OTPERATOR_EQUAL://À¨ºÅ³öÕ»
-            pStackOperatorList->ElementPull(NULL);//OperatorPull(NULL);
-            inumberpullresult1 = pStackNumberList->ElementPull(&ivalue1);//NumberPull(&ivalue1);
+            pStackOperatorList->ElementPull(NULL);
+            inumberpullresult1 = pStackNumberList->ElementPull(&ivalue1);
             if (inumberpullresult1 == 1)
             {
                 if (CountCurrentValue(ivalue1,&ivalue) == -1)
@@ -598,7 +597,7 @@ int cVariableInfo::JudgeOperator(char copeator_new,const char * pLineData)
                     return -1;
                 }
             }
-            pStackNumberList->ElementPush(ivalue);//NumberPush(ivalue);
+            pStackNumberList->ElementPush(ivalue);
 
             printf("t%d = %d\r\n",iVariableNum++,ivalue);
 
@@ -617,17 +616,17 @@ int cVariableInfo::JudgeNewLine(const char * pLineData)
     char coperator,coperator_temp;
     char ErrorString[VARIABLE_MAXLEN + 1] = "";
 
-    if (pStackOperatorList->GetElementAmount())//while (GetOperatorAmount())//±í´ïÊ½ÉĞÎ´ÔËËãÍê±Ï
+    if (pStackOperatorList->GetElementAmount())//±í´ïÊ½ÉĞÎ´ÔËËãÍê±Ï
     {
-        if (pStackOperatorList->ElementPull(&coperator) == 0)//if (OperatorPull(&coperator) == 0)
+        if (pStackOperatorList->ElementPull(&coperator) == 0)
             return -1;
-        if (pStackOperatorList->ElementGetTop(&coperator_temp) == 1)//if (OperatorGetCh(&coperator_temp) == 1)
+        if (pStackOperatorList->ElementGetTop(&coperator_temp) == 1)
         {
             if (coperator_temp == '(')
-                pStackOperatorList->ElementPull(NULL);//OperatorPull(NULL);
+                pStackOperatorList->ElementPull(NULL);
         }
-        inumberpullresult1 = pStackNumberList->ElementPull(&ivalue1);//NumberPull(&ivalue1);
-        inumberpullresult2 = pStackNumberList->ElementPull(&ivalue2);//NumberPull(&ivalue2);
+        inumberpullresult1 = pStackNumberList->ElementPull(&ivalue1);
+        inumberpullresult2 = pStackNumberList->ElementPull(&ivalue2);
         if (inumberpullresult1 == 0 && inumberpullresult2 == 0)
         {
             ivalue1 = ivalue2 = 0;
@@ -654,7 +653,7 @@ int cVariableInfo::JudgeNewLine(const char * pLineData)
             return -1;
         }
 
-        pStackNumberList->ElementPush(ivalue);//NumberPush(ivalue);
+        pStackNumberList->ElementPush(ivalue);
 
         printf("t%d = %d\r\n",iVariableNum++,ivalue);
     }
@@ -694,7 +693,7 @@ int cVariableInfo::JudgeVariable(int iDataNumber,const char * pLine,const char *
                 printf("The equalmark is incorrect in the \"%s\"!\r\n",ErrorString);
                 return -1;
             }
-            pStackNumberList->ElementPush(ivalue);//NumberPush(ivalue);
+            pStackNumberList->ElementPush(ivalue);
 
             printf("t%d = %d\r\n",iVariableNum++,ivalue);
         }
@@ -717,7 +716,7 @@ int cVariableInfo::JudgeVariable(int iDataNumber,const char * pLine,const char *
             printf("The equalmark is incorrect in the \"%s\"!\r\n",ErrorString);
             return -1;
         }
-        pStackNumberList->ElementPush(ivalue);//NumberPush(ivalue);
+        pStackNumberList->ElementPush(ivalue);
 
         printf("t%d = %d\r\n",iVariableNum++,ivalue);
     }
@@ -731,12 +730,12 @@ int cVariableInfo::CountCurrentValue(int icurvalue,int * presult)
     char coperator_temp;
     int inumberpullresult2,ivalue2,ivalue;
 
-    if (pStackOperatorList->ElementGetTop(&coperator_temp))//if (OperatorGetCh(&coperator_temp) == 1)
+    if (pStackOperatorList->ElementGetTop(&coperator_temp))
     {
         //Ç°Ò»¸öÔËËã·ûÊÇ³Ë»òÕß³ı,Á¢¼´½øĞĞÔËËã
         if (coperator_temp == '*' || coperator_temp == '/')
         {
-            inumberpullresult2 = pStackNumberList->ElementPull(&ivalue2);//NumberPull(&ivalue2);
+            inumberpullresult2 = pStackNumberList->ElementPull(&ivalue2);
             if (inumberpullresult2 == 0)
             {
                 * presult = icurvalue;
@@ -745,7 +744,7 @@ int cVariableInfo::CountCurrentValue(int icurvalue,int * presult)
             if (Expression(ivalue2,icurvalue,coperator_temp,&ivalue) == 0)//ÇóÖµ
                 return -1;
 
-            pStackOperatorList->ElementPull(NULL);//OperatorPull(NULL);//ÍËµôÇ°Ò»¸öÔËËã·û
+            pStackOperatorList->ElementPull(NULL);//ÍËµôÇ°Ò»¸öÔËËã·û
             * presult = ivalue;
             return 1;
         }

@@ -12,10 +12,11 @@ CGetInput::~CGetInput(void)
 int CGetInput::ReadStandardInput(void)//从标准输入输出读取数据
 {
     char cVariable[VARIABLE_MAXLEN + 1] = "",ch;
-    int i = 0,ivaluechar = 0;
+    int i = 0;
 
     while (1)
     {
+		i = 0;
         memset(cVariable,0x00,sizeof(cVariable));
         ch = getchar();
         if ((ch == '\n') || (ch == '\r'))//输入结束
@@ -35,14 +36,10 @@ int CGetInput::ReadStandardInput(void)//从标准输入输出读取数据
         if ((strlen(cVariable) == 0) ||
             (strlen(cVariable) == 1 && (cVariable[0] == '\r' || cVariable[0] == '\n')))
         {
-            i = 0;
-            memset(cVariable,0x00,sizeof(cVariable));
             continue;
         }
         if (VarInfo->AddNode(cVariable) == -1)
             return 0;
-        i = 0;
-        memset(cVariable,0x00,sizeof(cVariable));
     }
     return 1;
 }

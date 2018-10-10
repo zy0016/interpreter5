@@ -19,7 +19,6 @@ typedef enum
 
 NUMBER_TYPE StringIsNumber(const char * pString);
 int InCharArray(char ch,const char * pArray,int count);
-char *  TrimString(char * pStr);
+char * TrimString(char * pStr);
 int FileIsExist(const char * filename);//考察文件是否可读
-int func(int x );
 #endif
